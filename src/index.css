@@ -1,0 +1,114 @@
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-soft-normal.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-soft-italic.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 700;
+  src: url('../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2') format('woff2-variations');
+}
+@font-face {
+  font-family: 'Pinyon Script';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../node_modules/@fontsource/pinyon-script/files/pinyon-script-latin-400-normal.woff2') format('woff2');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: 255 248 239;
+  --blush: 251 227 207;
+  --ember: 191 77 9;
+  --rust: 142 58 12;
+  --cocoa: 74 36 18;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: 30 19 13;
+    --blush: 52 32 21;
+    --ember: 232 118 50;
+    --rust: 240 160 110;
+    --cocoa: 246 228 212;
+    color-scheme: dark;
+  }
+}
+:root[data-theme='dark'] {
+  --paper: 30 19 13;
+  --blush: 52 32 21;
+  --ember: 232 118 50;
+  --rust: 240 160 110;
+  --cocoa: 246 228 212;
+  color-scheme: dark;
+}
+
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  background: rgb(var(--paper));
+  color: rgb(var(--cocoa));
+  font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
+  overflow-x: hidden;
+}
+img { max-width: 100%; }
+::selection { background: rgb(var(--ember)); color: #fff8ef; }
+
+/* Papel con grano: textura en SVG, sin imágenes externas */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s ease, transform 1s cubic-bezier(.2,.8,.2,1); }
+.reveal.is-in { opacity: 1; transform: none; }
+
+
+:focus-visible { outline: 2px solid rgb(var(--ember)); outline-offset: 3px; border-radius: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+@keyframes drawline { to { stroke-dashoffset: 0; } }
+.draw .mask-path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.draw.is-in .mask-path { animation: drawline 2s cubic-bezier(.6,0,.3,1) forwards; animation-delay: var(--d, 0s); }
+@keyframes liftin { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+/* Titulares: Fraunces en su versión "suave", con óptica de gran tamaño */
+.font-display { font-variation-settings: 'SOFT' 100, 'opsz' 144; }
+
+/* Modo noche: el grano se aclara en lugar de oscurecer */
+:root[data-theme='dark'] .grain::after { mix-blend-mode: screen; opacity: 0.05; }
+
+/* Transición circular al cambiar de tema */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
